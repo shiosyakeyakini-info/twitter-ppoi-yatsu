@@ -18,6 +18,8 @@ class Timeline with _$Timeline {
   const factory Timeline({
     required TimelineType type,
     required List<Note> note,
+    required bool isTimelineTopLoaded,
+    required bool isTimelineBottomLoaded,
   }) = _Timeline;
 }
 
@@ -69,10 +71,46 @@ class TimelineNotifier extends _$TimelineNotifier {
     state = state = AsyncValue.data(state.requireValue.copyWith(note: notes));
   }
 
+  Future updateFromBottom() async {
+    if (state.requireValue.isTimelineBottomLoaded) {
+      return;
+    }
+    state = AsyncValue.data(state.requireValue.copyWith(
+      isTimelineBottomLoaded: true,
+    ));
+    final Iterable<Note> oldNotes;
+    final lastId = state.requireValue.note.last.id;
+    switch (type) {
+      case TimelineType.homeTimeline:
+        oldNotes = await misskey.notes
+            .homeTimeline(NotesTimelineRequest(limit: 50, untilId: lastId));
+      case TimelineType.localTimeline:
+        oldNotes = await misskey.notes.localTimeline(
+            NotesLocalTimelineRequest(limit: 50, untilId: lastId));
+      case TimelineType.socialTimeline:
+        oldNotes = await misskey.notes.hybridTimeline(
+            NotesHybridTimelineRequest(limit: 50, untilId: lastId));
+      case TimelineType.globalTimeline:
+        oldNotes = await misskey.notes
+            .globalTimeline(NotesGlobalTimelineRequest(untilId: lastId));
+    }
+
+    final notes = (state.value?.note ?? []).toList();
+    state = state = AsyncValue.data(state.requireValue.copyWith(
+      note: [...notes, ...oldNotes],
+      isTimelineBottomLoaded: false,
+    ));
+  }
+
   @override
   Future<Timeline> build(TimelineType type) async {
     misskey = ref.watch(currentMisskeyProvider);
 
-    return Timeline(type: type, note: (await _getTimeline()).toList());
+    return Timeline(
+      type: type,
+      note: (await _getTimeline()).toList(),
+      isTimelineBottomLoaded: false,
+      isTimelineTopLoaded: false,
+    );
   }
 }

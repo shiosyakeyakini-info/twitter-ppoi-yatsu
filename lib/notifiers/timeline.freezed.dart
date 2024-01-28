@@ -18,6 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$Timeline {
   TimelineType get type => throw _privateConstructorUsedError;
   List<Note> get note => throw _privateConstructorUsedError;
+  bool get isTimelineTopLoaded => throw _privateConstructorUsedError;
+  bool get isTimelineBottomLoaded => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TimelineCopyWith<Timeline> get copyWith =>
@@ -29,7 +31,11 @@ abstract class $TimelineCopyWith<$Res> {
   factory $TimelineCopyWith(Timeline value, $Res Function(Timeline) then) =
       _$TimelineCopyWithImpl<$Res, Timeline>;
   @useResult
-  $Res call({TimelineType type, List<Note> note});
+  $Res call(
+      {TimelineType type,
+      List<Note> note,
+      bool isTimelineTopLoaded,
+      bool isTimelineBottomLoaded});
 }
 
 /// @nodoc
@@ -47,6 +53,8 @@ class _$TimelineCopyWithImpl<$Res, $Val extends Timeline>
   $Res call({
     Object? type = null,
     Object? note = null,
+    Object? isTimelineTopLoaded = null,
+    Object? isTimelineBottomLoaded = null,
   }) {
     return _then(_value.copyWith(
       type: null == type
@@ -57,6 +65,14 @@ class _$TimelineCopyWithImpl<$Res, $Val extends Timeline>
           ? _value.note
           : note // ignore: cast_nullable_to_non_nullable
               as List<Note>,
+      isTimelineTopLoaded: null == isTimelineTopLoaded
+          ? _value.isTimelineTopLoaded
+          : isTimelineTopLoaded // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isTimelineBottomLoaded: null == isTimelineBottomLoaded
+          ? _value.isTimelineBottomLoaded
+          : isTimelineBottomLoaded // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -69,7 +85,11 @@ abstract class _$$TimelineImplCopyWith<$Res>
       __$$TimelineImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({TimelineType type, List<Note> note});
+  $Res call(
+      {TimelineType type,
+      List<Note> note,
+      bool isTimelineTopLoaded,
+      bool isTimelineBottomLoaded});
 }
 
 /// @nodoc
@@ -85,6 +105,8 @@ class __$$TimelineImplCopyWithImpl<$Res>
   $Res call({
     Object? type = null,
     Object? note = null,
+    Object? isTimelineTopLoaded = null,
+    Object? isTimelineBottomLoaded = null,
   }) {
     return _then(_$TimelineImpl(
       type: null == type
@@ -95,6 +117,14 @@ class __$$TimelineImplCopyWithImpl<$Res>
           ? _value._note
           : note // ignore: cast_nullable_to_non_nullable
               as List<Note>,
+      isTimelineTopLoaded: null == isTimelineTopLoaded
+          ? _value.isTimelineTopLoaded
+          : isTimelineTopLoaded // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isTimelineBottomLoaded: null == isTimelineBottomLoaded
+          ? _value.isTimelineBottomLoaded
+          : isTimelineBottomLoaded // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -102,7 +132,11 @@ class __$$TimelineImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$TimelineImpl implements _Timeline {
-  const _$TimelineImpl({required this.type, required final List<Note> note})
+  const _$TimelineImpl(
+      {required this.type,
+      required final List<Note> note,
+      required this.isTimelineTopLoaded,
+      required this.isTimelineBottomLoaded})
       : _note = note;
 
   @override
@@ -116,8 +150,13 @@ class _$TimelineImpl implements _Timeline {
   }
 
   @override
+  final bool isTimelineTopLoaded;
+  @override
+  final bool isTimelineBottomLoaded;
+
+  @override
   String toString() {
-    return 'Timeline(type: $type, note: $note)';
+    return 'Timeline(type: $type, note: $note, isTimelineTopLoaded: $isTimelineTopLoaded, isTimelineBottomLoaded: $isTimelineBottomLoaded)';
   }
 
   @override
@@ -126,12 +165,20 @@ class _$TimelineImpl implements _Timeline {
         (other.runtimeType == runtimeType &&
             other is _$TimelineImpl &&
             (identical(other.type, type) || other.type == type) &&
-            const DeepCollectionEquality().equals(other._note, _note));
+            const DeepCollectionEquality().equals(other._note, _note) &&
+            (identical(other.isTimelineTopLoaded, isTimelineTopLoaded) ||
+                other.isTimelineTopLoaded == isTimelineTopLoaded) &&
+            (identical(other.isTimelineBottomLoaded, isTimelineBottomLoaded) ||
+                other.isTimelineBottomLoaded == isTimelineBottomLoaded));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, type, const DeepCollectionEquality().hash(_note));
+      runtimeType,
+      type,
+      const DeepCollectionEquality().hash(_note),
+      isTimelineTopLoaded,
+      isTimelineBottomLoaded);
 
   @JsonKey(ignore: true)
   @override
@@ -143,12 +190,18 @@ class _$TimelineImpl implements _Timeline {
 abstract class _Timeline implements Timeline {
   const factory _Timeline(
       {required final TimelineType type,
-      required final List<Note> note}) = _$TimelineImpl;
+      required final List<Note> note,
+      required final bool isTimelineTopLoaded,
+      required final bool isTimelineBottomLoaded}) = _$TimelineImpl;
 
   @override
   TimelineType get type;
   @override
   List<Note> get note;
+  @override
+  bool get isTimelineTopLoaded;
+  @override
+  bool get isTimelineBottomLoaded;
   @override
   @JsonKey(ignore: true)
   _$$TimelineImplCopyWith<_$TimelineImpl> get copyWith =>

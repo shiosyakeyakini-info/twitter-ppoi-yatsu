@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mfm/mfm.dart';
@@ -16,8 +15,13 @@ import 'package:tweekey/route.dart';
 
 class MisskeyNote extends ConsumerStatefulWidget {
   final Note note;
+  final bool isQuoted;
 
-  const MisskeyNote({super.key, required this.note});
+  const MisskeyNote({
+    super.key,
+    required this.note,
+    this.isQuoted = false,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => MisskeyNoteState();
@@ -136,25 +140,43 @@ class MisskeyNoteState extends ConsumerState<MisskeyNote> {
                     const Padding(
                       padding: EdgeInsets.only(left: 5),
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      padding: const EdgeInsets.only(top: 2),
-                      constraints: const BoxConstraints(),
-                      icon: Icon(
-                        Icons.more_horiz,
-                        color: unDetailedColor,
-                        size: MediaQuery.of(context).textScaler.scale(16.0),
-                      ),
-                    )
+                    if (!widget.isQuoted)
+                      IconButton(
+                        onPressed: () {},
+                        padding: const EdgeInsets.only(top: 2),
+                        constraints: const BoxConstraints(),
+                        icon: Icon(
+                          Icons.more_horiz,
+                          color: unDetailedColor,
+                          size: MediaQuery.of(context).textScaler.scale(16.0),
+                        ),
+                      )
                   ],
                 ),
+                if (widget.note.reply != null) ...[
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        const TextSpan(
+                            text: "返信先: ",
+                            style: TextStyle(color: unDetailedColor)),
+                        TextSpan(
+                            text:
+                                "@${widget.note.reply!.user.username}${widget.note.reply!.user.host == null ? "" : "@${widget.note.reply!.user.host}"}さん",
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor)),
+                      ],
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.only(top: 5)),
+                ],
                 if (widget.note.text != null)
                   Mfm(
                     mfmText: widget.note.text,
                     emojiBuilder: (context, shortCode, style) => MisskeyEmoji(
                       shortCode: shortCode,
                       style: style ?? const TextStyle(),
-                      remoteReactions: widget.note.reactionEmojis,
+                      remoteReactions: widget.note.emojis,
                     ),
                   ),
                 const Padding(
@@ -166,68 +188,89 @@ class MisskeyNoteState extends ConsumerState<MisskeyNote> {
                     padding: EdgeInsets.only(top: 5),
                   ),
                 ],
-                Row(
-                  children: [
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () {},
-                      icon: FaIcon(
-                        FontAwesomeIcons.reply,
-                        color: unDetailedColor,
-                        size: MediaQuery.of(context).textScaler.scale(16.0),
+                if (widget.note.renote != null && !widget.isQuoted) ...[
+                  const Padding(
+                    padding: EdgeInsets.only(top: 5),
+                  ),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: lightBorder),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 10.0,
+                      ),
+                      child: MisskeyNote(
+                        note: widget.note.renote!,
+                        isQuoted: true,
                       ),
                     ),
-                    const Padding(padding: EdgeInsets.only(left: 3)),
-                    Text(
-                      widget.note.repliesCount.toString(),
-                      style: const TextStyle(color: unDetailedColor),
-                    ),
-                    const Expanded(child: SizedBox.shrink()),
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () {},
-                      icon: FaIcon(
-                        FontAwesomeIcons.retweet,
-                        color: unDetailedColor,
-                        size: MediaQuery.of(context).textScaler.scale(16.0),
+                  )
+                ],
+                if (!widget.isQuoted)
+                  Row(
+                    children: [
+                      IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {},
+                        icon: FaIcon(
+                          FontAwesomeIcons.reply,
+                          color: unDetailedColor,
+                          size: MediaQuery.of(context).textScaler.scale(16.0),
+                        ),
                       ),
-                    ),
-                    const Padding(padding: EdgeInsets.only(left: 3)),
-                    Text(
-                      widget.note.renoteCount.toString(),
-                      style: const TextStyle(color: unDetailedColor),
-                    ),
-                    const Expanded(child: SizedBox.shrink()),
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.face_outlined,
-                        color: unDetailedColor,
-                        size: MediaQuery.of(context).textScaler.scale(16.0),
+                      const Padding(padding: EdgeInsets.only(left: 3)),
+                      Text(
+                        widget.note.repliesCount.toString(),
+                        style: const TextStyle(color: unDetailedColor),
                       ),
-                    ),
-                    const Padding(padding: EdgeInsets.only(left: 3)),
-                    Text(
-                      widget.note.reactions.values.sum.toString(),
-                      style: const TextStyle(color: unDetailedColor),
-                    ),
-                    const Expanded(child: SizedBox.shrink()),
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.ios_share,
-                        color: unDetailedColor,
-                        size: MediaQuery.of(context).textScaler.scale(16.0),
+                      const Expanded(child: SizedBox.shrink()),
+                      IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {},
+                        icon: FaIcon(
+                          FontAwesomeIcons.retweet,
+                          color: unDetailedColor,
+                          size: MediaQuery.of(context).textScaler.scale(16.0),
+                        ),
                       ),
-                    ),
-                  ],
-                )
+                      const Padding(padding: EdgeInsets.only(left: 3)),
+                      Text(
+                        widget.note.renoteCount.toString(),
+                        style: const TextStyle(color: unDetailedColor),
+                      ),
+                      const Expanded(child: SizedBox.shrink()),
+                      IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.face_outlined,
+                          color: unDetailedColor,
+                          size: MediaQuery.of(context).textScaler.scale(16.0),
+                        ),
+                      ),
+                      const Padding(padding: EdgeInsets.only(left: 3)),
+                      Text(
+                        widget.note.reactions.values.sum.toString(),
+                        style: const TextStyle(color: unDetailedColor),
+                      ),
+                      const Expanded(child: SizedBox.shrink()),
+                      IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.ios_share,
+                          color: unDetailedColor,
+                          size: MediaQuery.of(context).textScaler.scale(16.0),
+                        ),
+                      ),
+                    ],
+                  )
               ],
             ),
           ),

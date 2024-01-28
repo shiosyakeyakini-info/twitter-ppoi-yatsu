@@ -5,11 +5,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mfm/mfm.dart';
 import 'package:tweekey/common/avatar_icon.dart';
+import 'package:tweekey/common/continue_list_view.dart';
 import 'package:tweekey/common/misskey_emoji.dart';
 import 'package:tweekey/common/misskey_note.dart';
 import 'package:tweekey/main.dart';
 import 'package:tweekey/notifiers/account.dart';
-import 'package:tweekey/notifiers/user_page_data.dart';
+import 'package:tweekey/notifiers/user_page_notifier.dart';
 
 @RoutePage()
 class UserPage extends ConsumerStatefulWidget {
@@ -33,9 +34,11 @@ class UserPageState extends ConsumerState<UserPage> {
         ref.watch(userPageDataNotifierProvider(widget.userName, widget.host));
 
     if (state.isLoading) {
-      return const Center(
-        child: SizedBox(
-            width: 100, height: 100, child: CircularProgressIndicator()),
+      return const Scaffold(
+        body: Center(
+          child: SizedBox(
+              width: 100, height: 100, child: CircularProgressIndicator()),
+        ),
       );
     }
 
@@ -50,7 +53,7 @@ class UserPageState extends ConsumerState<UserPage> {
       body: DefaultTabController(
         length: 5,
         child: NestedScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           headerSliverBuilder: (context, isnantoka) => [
             SliverAppBar(
               expandedHeight: 200,
@@ -58,7 +61,7 @@ class UserPageState extends ConsumerState<UserPage> {
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: false,
                 title: Transform.translate(
-                  offset: Offset(0.0, 9.0),
+                  offset: const Offset(0.0, 30.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +92,7 @@ class UserPageState extends ConsumerState<UserPage> {
                   child: Stack(children: [
                     data.userDetailed.bannerUrl != null
                         ? Image.network(data.userDetailed.bannerUrl!.toString(),
-                            fit: BoxFit.fitWidth,
+                            fit: BoxFit.cover,
                             width: double.infinity,
                             height: 150)
                         : SizedBox(
@@ -228,6 +231,12 @@ class UserPageState extends ConsumerState<UserPage> {
                             ),
                           ],
                         ),
+                        const Padding(padding: EdgeInsets.only(top: 20)),
+                        Mfm(
+                          mfmText:
+                              "<b>\$[fg.color=000 ${data.userDetailed.followingCount}]</b> フォロー中   <b>\$[fg.color=000 ${data.userDetailed.followersCount}]</b> フォロワー",
+                          style: const TextStyle(color: unDetailedColor),
+                        ),
                       ],
                     ),
                   ),
@@ -246,7 +255,11 @@ class UserPageState extends ConsumerState<UserPage> {
             ),
           ],
           body: TabBarView(children: [
-            UserTweets(userName: widget.userName, host: widget.host)
+            UserTweets(userName: widget.userName, host: widget.host),
+            UserReplyTweets(userName: widget.userName, host: widget.host),
+            UserHighlightNotes(userName: widget.userName, host: widget.host),
+            UserMediaNotes(userName: widget.userName, host: widget.host),
+            UserReactedNotes(userName: widget.userName, host: widget.host)
           ]),
         ),
       ),
@@ -273,7 +286,7 @@ class UserTweets extends ConsumerWidget {
 
     final targetNotes = [...pinnedNotes, ...notes];
 
-    return ListView.separated(
+    return ContinueListView(
       itemCount: targetNotes.length,
       itemBuilder: (context, index) => index >= pinnedNotes.length
           ? MisskeyNote(note: targetNotes[index])
@@ -307,8 +320,164 @@ class UserTweets extends ConsumerWidget {
               ],
             ),
       separatorBuilder: (context, index) => const Divider(
-        color: Color.fromRGBO(239, 243, 244, 1),
+        color: lightBorder,
       ),
+      onLast: () {
+        ref
+            .watch(UserPageDataNotifierProvider(userName, host).notifier)
+            .loadUserNotesFromBottom();
+      },
+    );
+  }
+}
+
+class UserReplyTweets extends ConsumerWidget {
+  final String userName;
+  final String? host;
+
+  const UserReplyTweets(
+      {super.key, required this.userName, required this.host});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notes = ref.watch(UserPageDataNotifierProvider(userName, host)
+        .select((value) => value.valueOrNull?.includeReplyNotes));
+
+    if (notes == null) {
+      return const SizedBox.shrink();
+    }
+    if (notes.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        ref
+            .watch(UserPageDataNotifierProvider(userName, host).notifier)
+            .loadIncludeReplyNotes();
+      });
+    }
+
+    return ContinueListView(
+      itemCount: notes.length,
+      itemBuilder: (context, index) => MisskeyNote(note: notes[index]),
+      separatorBuilder: (context, index) => const Divider(
+        color: lightBorder,
+      ),
+      onLast: () {
+        ref
+            .watch(UserPageDataNotifierProvider(userName, host).notifier)
+            .loadIncludeReplyNotes();
+      },
+    );
+  }
+}
+
+class UserHighlightNotes extends ConsumerWidget {
+  final String userName;
+  final String? host;
+
+  const UserHighlightNotes(
+      {super.key, required this.userName, required this.host});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notes = ref.watch(UserPageDataNotifierProvider(userName, host)
+        .select((value) => value.valueOrNull?.highlightNotes));
+
+    if (notes == null) {
+      return const SizedBox.shrink();
+    }
+    if (notes.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        ref
+            .watch(UserPageDataNotifierProvider(userName, host).notifier)
+            .loadHighlightNotes();
+      });
+    }
+
+    return ContinueListView(
+      itemCount: notes.length,
+      itemBuilder: (context, index) => MisskeyNote(note: notes[index]),
+      separatorBuilder: (context, index) => const Divider(
+        color: lightBorder,
+      ),
+      onLast: () {
+        ref
+            .watch(UserPageDataNotifierProvider(userName, host).notifier)
+            .loadHighlightNotes();
+      },
+    );
+  }
+}
+
+class UserMediaNotes extends ConsumerWidget {
+  final String userName;
+  final String? host;
+
+  const UserMediaNotes({super.key, required this.userName, required this.host});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notes = ref.watch(UserPageDataNotifierProvider(userName, host)
+        .select((value) => value.valueOrNull?.mediaNotes));
+
+    if (notes == null) {
+      return const SizedBox.shrink();
+    }
+    if (notes.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        ref
+            .watch(UserPageDataNotifierProvider(userName, host).notifier)
+            .loadMediaNotes();
+      });
+    }
+
+    return ContinueListView(
+      itemCount: notes.length,
+      itemBuilder: (context, index) => MisskeyNote(note: notes[index]),
+      separatorBuilder: (context, index) => const Divider(
+        color: lightBorder,
+      ),
+      onLast: () {
+        ref
+            .watch(UserPageDataNotifierProvider(userName, host).notifier)
+            .loadMediaNotes();
+      },
+    );
+  }
+}
+
+class UserReactedNotes extends ConsumerWidget {
+  final String userName;
+  final String? host;
+
+  const UserReactedNotes(
+      {super.key, required this.userName, required this.host});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notes = ref.watch(UserPageDataNotifierProvider(userName, host)
+        .select((value) => value.valueOrNull?.reactedNotes));
+
+    if (notes == null) {
+      return const SizedBox.shrink();
+    }
+    if (notes.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        ref
+            .watch(UserPageDataNotifierProvider(userName, host).notifier)
+            .loadReactedNotes();
+      });
+    }
+
+    return ContinueListView(
+      itemCount: notes.length,
+      itemBuilder: (context, index) => MisskeyNote(note: notes[index]),
+      separatorBuilder: (context, index) => const Divider(
+        color: lightBorder,
+      ),
+      onLast: () {
+        ref
+            .watch(UserPageDataNotifierProvider(userName, host).notifier)
+            .loadReactedNotes();
+      },
     );
   }
 }

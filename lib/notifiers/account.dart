@@ -14,7 +14,7 @@ class Account with _$Account {
   const factory Account({
     required String token,
     required String host,
-    required IResponse i,
+    required MeDetailed i,
     required MetaResponse meta,
     required List<Emoji> emoji,
   }) = _Account;

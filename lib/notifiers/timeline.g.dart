@@ -6,7 +6,7 @@ part of 'timeline.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$timelineNotifierHash() => r'0e20d7d68cd825e9f39c35d5fd1d0fbd505db0b0';
+String _$timelineNotifierHash() => r'c61943ce23dddccdce84bb50f53b34387ea3f191';
 
 /// Copied from Dart SDK
 class _SystemHash {

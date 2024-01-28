@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:tweekey/route.dart';
 
 const primaryColor = Color.fromRGBO(29, 155, 240, 1);
 const unDetailedColor = Color.fromRGBO(83, 100, 113, 1);
+const lightBorder = Color.fromRGBO(239, 243, 244, 1);
 
 void main() {
   runApp(const Tweekey());
@@ -47,8 +49,30 @@ class TweekeyState extends State<Tweekey> {
             style: ButtonStyle(
               backgroundColor: MaterialStatePropertyAll(primaryColor),
               foregroundColor: MaterialStatePropertyAll(Colors.white),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: VisualDensity.standard,
+              textStyle: MaterialStatePropertyAll(
+                  TextStyle(fontWeight: FontWeight.bold)),
             ),
           ),
+          outlinedButtonTheme: const OutlinedButtonThemeData(
+            style: ButtonStyle(
+              visualDensity: VisualDensity.standard,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              textStyle: MaterialStatePropertyAll(
+                  TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ),
+          iconButtonTheme: const IconButtonThemeData(
+            style: ButtonStyle(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+          tabBarTheme: const TabBarTheme(
+            labelStyle: TextStyle(fontWeight: FontWeight.bold),
+            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          visualDensity: VisualDensity.standard,
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
             backgroundColor: primaryColor,
             foregroundColor: Colors.white,
@@ -58,10 +82,16 @@ class TweekeyState extends State<Tweekey> {
           drawerTheme: const DrawerThemeData(
               backgroundColor: Colors.white, shape: BeveledRectangleBorder()),
           useMaterial3: true,
-          fontFamilyFallback: const ["ヒラギノ角ゴシック"],
+          fontFamily: defaultTargetPlatform == TargetPlatform.iOS
+              ? ".SF Pro Text"
+              : null,
+          fontFamilyFallback: defaultTargetPlatform == TargetPlatform.macOS
+              ? ["ヒラギノ角ゴシック"]
+              : defaultTargetPlatform == TargetPlatform.iOS
+                  ? ["Helvetica Neue", "Hiragino Kaku Gothic Pro"]
+                  : null,
         ),
-        routerDelegate: _appRouter.delegate(),
-        routeInformationParser: _appRouter.defaultRouteParser(),
+        routerConfig: _appRouter.config(),
         debugShowCheckedModeBanner: false,
         scrollBehavior: MyScrollBehavior(),
       ),

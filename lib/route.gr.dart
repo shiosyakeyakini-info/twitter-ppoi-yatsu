@@ -25,10 +25,28 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CreateNoteRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const CreateNotePage(),
+      );
+    },
     LoginRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const LoginPage(),
+      );
+    },
+    SearchNoteDetailRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SearchNoteDetailPage(),
+      );
+    },
+    SearchNoteRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SearchNotePage(),
       );
     },
     ServerInputRoute.name: (routeData) {
@@ -102,6 +120,20 @@ class APIKeyInputRouteArgs {
 }
 
 /// generated route for
+/// [CreateNotePage]
+class CreateNoteRoute extends PageRouteInfo<void> {
+  const CreateNoteRoute({List<PageRouteInfo>? children})
+      : super(
+          CreateNoteRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CreateNoteRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [LoginPage]
 class LoginRoute extends PageRouteInfo<void> {
   const LoginRoute({List<PageRouteInfo>? children})
@@ -111,6 +143,34 @@ class LoginRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'LoginRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [SearchNoteDetailPage]
+class SearchNoteDetailRoute extends PageRouteInfo<void> {
+  const SearchNoteDetailRoute({List<PageRouteInfo>? children})
+      : super(
+          SearchNoteDetailRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SearchNoteDetailRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [SearchNotePage]
+class SearchNoteRoute extends PageRouteInfo<void> {
+  const SearchNoteRoute({List<PageRouteInfo>? children})
+      : super(
+          SearchNoteRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SearchNoteRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

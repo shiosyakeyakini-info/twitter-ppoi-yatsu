@@ -10,7 +10,7 @@ _$AccountImpl _$$AccountImplFromJson(Map<String, dynamic> json) =>
     _$AccountImpl(
       token: json['token'] as String,
       host: json['host'] as String,
-      i: IResponse.fromJson(json['i'] as Map<String, dynamic>),
+      i: MeDetailed.fromJson(json['i'] as Map<String, dynamic>),
       meta: MetaResponse.fromJson(json['meta'] as Map<String, dynamic>),
       emoji: (json['emoji'] as List<dynamic>)
           .map((e) => Emoji.fromJson(e as Map<String, dynamic>))

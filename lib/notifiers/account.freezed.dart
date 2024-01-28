@@ -22,7 +22,7 @@ Account _$AccountFromJson(Map<String, dynamic> json) {
 mixin _$Account {
   String get token => throw _privateConstructorUsedError;
   String get host => throw _privateConstructorUsedError;
-  IResponse get i => throw _privateConstructorUsedError;
+  MeDetailed get i => throw _privateConstructorUsedError;
   MetaResponse get meta => throw _privateConstructorUsedError;
   List<Emoji> get emoji => throw _privateConstructorUsedError;
 
@@ -39,11 +39,11 @@ abstract class $AccountCopyWith<$Res> {
   $Res call(
       {String token,
       String host,
-      IResponse i,
+      MeDetailed i,
       MetaResponse meta,
       List<Emoji> emoji});
 
-  $IResponseCopyWith<$Res> get i;
+  $MeDetailedCopyWith<$Res> get i;
   $MetaResponseCopyWith<$Res> get meta;
 }
 
@@ -78,7 +78,7 @@ class _$AccountCopyWithImpl<$Res, $Val extends Account>
       i: null == i
           ? _value.i
           : i // ignore: cast_nullable_to_non_nullable
-              as IResponse,
+              as MeDetailed,
       meta: null == meta
           ? _value.meta
           : meta // ignore: cast_nullable_to_non_nullable
@@ -92,8 +92,8 @@ class _$AccountCopyWithImpl<$Res, $Val extends Account>
 
   @override
   @pragma('vm:prefer-inline')
-  $IResponseCopyWith<$Res> get i {
-    return $IResponseCopyWith<$Res>(_value.i, (value) {
+  $MeDetailedCopyWith<$Res> get i {
+    return $MeDetailedCopyWith<$Res>(_value.i, (value) {
       return _then(_value.copyWith(i: value) as $Val);
     });
   }
@@ -117,12 +117,12 @@ abstract class _$$AccountImplCopyWith<$Res> implements $AccountCopyWith<$Res> {
   $Res call(
       {String token,
       String host,
-      IResponse i,
+      MeDetailed i,
       MetaResponse meta,
       List<Emoji> emoji});
 
   @override
-  $IResponseCopyWith<$Res> get i;
+  $MeDetailedCopyWith<$Res> get i;
   @override
   $MetaResponseCopyWith<$Res> get meta;
 }
@@ -156,7 +156,7 @@ class __$$AccountImplCopyWithImpl<$Res>
       i: null == i
           ? _value.i
           : i // ignore: cast_nullable_to_non_nullable
-              as IResponse,
+              as MeDetailed,
       meta: null == meta
           ? _value.meta
           : meta // ignore: cast_nullable_to_non_nullable
@@ -188,7 +188,7 @@ class _$AccountImpl implements _Account {
   @override
   final String host;
   @override
-  final IResponse i;
+  final MeDetailed i;
   @override
   final MetaResponse meta;
   final List<Emoji> _emoji;
@@ -239,7 +239,7 @@ abstract class _Account implements Account {
   const factory _Account(
       {required final String token,
       required final String host,
-      required final IResponse i,
+      required final MeDetailed i,
       required final MetaResponse meta,
       required final List<Emoji> emoji}) = _$AccountImpl;
 
@@ -250,7 +250,7 @@ abstract class _Account implements Account {
   @override
   String get host;
   @override
-  IResponse get i;
+  MeDetailed get i;
   @override
   MetaResponse get meta;
   @override

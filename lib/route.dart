@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tweekey/pages/create_note_page/create_note_page.dart';
 import 'package:tweekey/pages/login_page/api_key_input_page.dart';
 import 'package:tweekey/pages/login_page/login_page.dart';
 import 'package:tweekey/pages/login_page/server_input_page.dart';
+import 'package:tweekey/pages/search_note_page/search_note_detail_page.dart';
+import 'package:tweekey/pages/search_note_page/search_note_page.dart';
 import 'package:tweekey/pages/splash_page/splash_page.dart';
 import 'package:tweekey/pages/timeline_page/timeline_page.dart';
 import 'package:tweekey/pages/user_page/user_page.dart';
@@ -18,5 +21,8 @@ class AppRouter extends _$AppRouter {
         AutoRoute(page: APIKeyInputRoute.page),
         AutoRoute(page: TimelineRoute.page),
         AutoRoute(page: UserRoute.page),
+        AutoRoute(page: CreateNoteRoute.page),
+        AutoRoute(page: SearchNoteRoute.page),
+        AutoRoute(page: SearchNoteDetailRoute.page),
       ];
 }
