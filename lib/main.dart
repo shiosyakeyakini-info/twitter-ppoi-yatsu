@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tweekey/route.dart';
 
 const primaryColor = Color.fromRGBO(29, 155, 240, 1);
@@ -9,28 +9,23 @@ const unDetailedColor = Color.fromRGBO(83, 100, 113, 1);
 const lightBorder = Color.fromRGBO(239, 243, 244, 1);
 
 void main() {
-  runApp(const Tweekey());
+  runApp(const ProviderScope(child: Tweekey()));
 }
 
 class MyScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+  };
 }
 
-class Tweekey extends StatefulWidget {
+class Tweekey extends ConsumerWidget {
   const Tweekey({super.key});
-
   @override
-  State<StatefulWidget> createState() => TweekeyState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
 
-class TweekeyState extends State<Tweekey> {
-  final _appRouter = AppRouter();
-  @override
-  Widget build(BuildContext context) {
     return ProviderScope(
       child: MaterialApp.router(
         title: 'Flutter Demo',
@@ -40,33 +35,35 @@ class TweekeyState extends State<Tweekey> {
             primary: primaryColor,
           ),
           inputDecorationTheme: InputDecorationTheme(
-              focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor)),
-              enabledBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: unDetailedColor.withAlpha(120)))),
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: primaryColor),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: unDetailedColor.withAlpha(120)),
+            ),
+          ),
           elevatedButtonTheme: const ElevatedButtonThemeData(
             style: ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(primaryColor),
-              foregroundColor: MaterialStatePropertyAll(Colors.white),
+              backgroundColor: WidgetStatePropertyAll(primaryColor),
+              foregroundColor: WidgetStatePropertyAll(Colors.white),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               visualDensity: VisualDensity.standard,
-              textStyle: MaterialStatePropertyAll(
-                  TextStyle(fontWeight: FontWeight.bold)),
+              textStyle: WidgetStatePropertyAll(
+                TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           outlinedButtonTheme: const OutlinedButtonThemeData(
             style: ButtonStyle(
               visualDensity: VisualDensity.standard,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              textStyle: MaterialStatePropertyAll(
-                  TextStyle(fontWeight: FontWeight.bold)),
+              textStyle: WidgetStatePropertyAll(
+                TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           iconButtonTheme: const IconButtonThemeData(
-            style: ButtonStyle(
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
+            style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
           ),
           tabBarTheme: const TabBarTheme(
             labelStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -77,21 +74,25 @@ class TweekeyState extends State<Tweekey> {
             backgroundColor: primaryColor,
             foregroundColor: Colors.white,
             shape: CircleBorder(),
-            elevation: 2.0,
+            elevation: 2,
           ),
           drawerTheme: const DrawerThemeData(
-              backgroundColor: Colors.white, shape: BeveledRectangleBorder()),
+            backgroundColor: Colors.white,
+            shape: BeveledRectangleBorder(),
+          ),
           useMaterial3: true,
-          fontFamily: defaultTargetPlatform == TargetPlatform.iOS
-              ? ".SF Pro Text"
-              : null,
-          fontFamilyFallback: defaultTargetPlatform == TargetPlatform.macOS
-              ? ["ヒラギノ角ゴシック"]
-              : defaultTargetPlatform == TargetPlatform.iOS
-                  ? ["Helvetica Neue", "Hiragino Kaku Gothic Pro"]
+          fontFamily:
+              defaultTargetPlatform == TargetPlatform.iOS
+                  ? '.SF Pro Text'
+                  : null,
+          fontFamilyFallback:
+              defaultTargetPlatform == TargetPlatform.macOS
+                  ? ['ヒラギノ角ゴシック']
+                  : defaultTargetPlatform == TargetPlatform.iOS
+                  ? ['Helvetica Neue', 'Hiragino Kaku Gothic Pro']
                   : null,
         ),
-        routerConfig: _appRouter.config(),
+        routerConfig: router.config(),
         debugShowCheckedModeBanner: false,
         scrollBehavior: MyScrollBehavior(),
       ),

@@ -5,13 +5,13 @@ extension DateTimeExtension on DateTime {
     final differ = DateTime.now().difference(this);
 
     if (differ < const Duration(minutes: 1)) {
-      return "${differ.inSeconds}秒前";
+      return '${differ.inSeconds}秒前';
     }
     if (differ < const Duration(hours: 1)) {
-      return "${differ.inMinutes}分前";
+      return '${differ.inMinutes}分前';
     }
 
-    return "$year/$month/$day";
+    return '$year/$month/$day';
   }
 }
 

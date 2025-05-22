@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ContinueListView extends StatelessWidget {
+
+  const ContinueListView({
+    required this.separatorBuilder, required this.itemBuilder, required this.itemCount, required this.onLast, super.key,
+  });
   final Widget Function(BuildContext, int) separatorBuilder;
   final Widget? Function(BuildContext, int) itemBuilder;
   final int itemCount;
   final Function onLast;
-
-  const ContinueListView({
-    super.key,
-    required this.separatorBuilder,
-    required this.itemBuilder,
-    required this.itemCount,
-    required this.onLast,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +20,7 @@ class ContinueListView extends StatelessWidget {
           });
           return const Center(
             child: Padding(
-              padding: EdgeInsets.all(15.0),
+              padding: EdgeInsets.all(15),
               child: SizedBox(
                 width: 30,
                 height: 30,
